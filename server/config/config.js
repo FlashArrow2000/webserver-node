@@ -9,10 +9,23 @@ process.env.PORT = process.env.PORT || 3000;
 //  =================
 //  Entorno
 //  =================
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev'; 
 
 //  =================
-//  Base de datos
+//  Vencimiento del Token
+//  =================
+
+process.env.CADUCIDAD_TOKEN = 60 * 60 * 24 * 30;
+
+//  =================
+//  SEED de autenticacion del JWT
+//  =================
+
+process.env.SEED_JWT = process.env.SEED_JWT || 'PgIdBvInYjbFFBm'
+
+//  =================
+//  Ambiente Base de datos
 //  =================
 
 let urlDB;

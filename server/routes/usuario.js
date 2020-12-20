@@ -1,11 +1,13 @@
 const express = require('express')
 const Usuario = require('../models/usuario');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const _ = require('underscore');   
+
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
 
 const app = express()
 
-    app.get('/usuario', function (req, res) {
+    app.get('/usuario', verificaToken, (req, res) => {
     
         let desde = req.query.desde || 0;
         desde = Number(desde);
@@ -43,7 +45,7 @@ const app = express()
     
     })
   
-  app.post('/usuario', function (req, res) {
+  app.post('/usuario', [verificaToken, verificaAdmin_Role], function (req, res) {
     
       let body = req.body;
   
@@ -74,7 +76,7 @@ const app = express()
   })
   
     // ACtualiza en BD
-  app.put('/usuario/:id', function (req, res) {
+  app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function (req, res) {
       let id = req.params.id;
       let body = _.pick(req.body, ['name','email','img','role','estado']); //Aqui utilizamos la libreria Underscore.js, y utilizamos la funcion pick, para devolver solo las propiedades que necesitamos
 
@@ -99,7 +101,7 @@ const app = express()
   
     //Usualmente no se eliminar registros de la base de datos, solamente se desactiva. Esto para mantener la integridad de los datos y llevar registros.   
     // Para eso usamos la func findByIdAndUpdate. Ya si queremos eliminar el usuario fisicamente, utilizamos el findByIdAndRemove 
-  app.delete('/usuario/:id', function (req, res) {
+  app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], function (req, res) {
 
     let id = req.params.id;
 
@@ -109,7 +111,7 @@ const app = express()
 
     // Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
 
-    Usuario.findByIdAndUpdate(id, cambiaEstado, {new: true}, (err, usuarioBorrado) => {
+    Usuario.findByIdAndUpdate(id, cambiaEstado, {new: true, useFindAndModify: true}, (err, usuarioBorrado) => {
 
         if (err) {
             return res.status(400).json({
