@@ -15,9 +15,9 @@ const app = express()
         let limite = req.query.limite || 5;
         limite = Number(limite);
 
-        //Esto es para hacer un GET paginado. Donde la func exec recibe como argumento un error y un arreglo de usuarios. La func .find no tiene ninguna condicion a recibir.
+        //Esto es para hacer un GET paginado. Donde la func exec recibe como argumento un error y un arreglo de usuarios. 
         // Lo que esta despues de la coma y entre comillas, son los campos o propiedades que quiero devolver.
-        // En este caso, solo quiero devolver los estados que tengan un true
+        // En este caso, solo quiero devolver los usuarios y sus propiedades mientras el estado sea true
         Usuario.find({estado: true}, 'name email role estado google img')
                 .skip(desde)
                 .limit(limite)
