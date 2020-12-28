@@ -51,7 +51,36 @@ let verificaAdmin_Role = (req, res, next) => {
 
 };
 
+// ============= 
+// Verificar token para imagen 
+// =============
+
+let verificaTokenImg = (req, res, next) => {
+
+    let token = req.query.token;
+
+    jwt.verify( token, process.env.SEED_JWT, (err, decoded) => {
+        // El segundo argumento del callback llamado decoded es el payload, es decir, contiene toda la info del usuario
+
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err:{
+                    message: 'Token no valido'
+                }
+            })
+        }
+
+        req.usuarioDB = decoded.usuarioDB;
+
+        next();
+
+    })
+
+};
+
 module.exports = {
     verificaToken,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    verificaTokenImg
 }
